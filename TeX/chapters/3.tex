@@ -1,0 +1,65 @@
+%%%%%%%%%%%%%%%%%%%%
+% Data and Methods %
+%%%%%%%%%%%%%%%%%%%%
+
+\section{Data and Methods}
+
+\subsection{Data Sources}
+
+This study uses data from the OECD, which provides harmonized economic and social statistics 
+across countries \parencite{oecd2025}. The main variables are ICT investments 
+\parencite{oecd2022ict} and unemployment rates by educational attainment 
+\parencite{oecd2022unemployment}. Control variables include GDP per capita 
+\parencite{oecd2022gdp}, trade union density \parencite{oecd2022tud}, tertiary education share 
+\parencite{oecd2022education}, and employment protection regulation 
+\parencite{oecd2022regulation}. Welfare state type is classified following Esping-Andersen 
+\parencite{espingandersen1990thethree}.
+
+The dataset covers 35 OECD and selected non-OECD countries\footnote{Australia, Austria, Belgium, 
+Bulgaria, Brazil, Canada, Croatia, Czechia, Denmark, Estonia, Finland, France, Germany, Greece, 
+Hungary, Iceland, Italy, Ireland, Latvia, Lithuania, Luxembourg, Netherlands, New Zealand, 
+Norway, Poland, Portugal, Romania, Spain, Sweden, Switzerland, Türkiye, Slovak Republic, 
+Slovenia, United Kingdom, United States.} from 2005 to 2022, resulting in 3973 observations after 
+merging and cleaning.
+
+ICT investments (share of GDP) capture gross fixed capital formation in digital infrastructure, 
+software, and technologies. Unemployment rates are disaggregated by educational attainment: low 
+(no or lower secondary education), medium (upper secondary or vocational training), and high 
+(tertiary education).
+
+Missing values for trade union density, tertiary education share, and labor market regulation 
+were linearly interpolated or extrapolated. GDP per capita was rescaled (per 1000 USD) for 
+interpretability.
+
+\subsection{Operationalization}
+
+The dependent variable is the unemployment rate (\texttt{UNEMPLOYMENT\_RATE\_PERCENT}), by 
+education level. The main independent variable is ICT investment 
+(\texttt{ICT\_INVEST\_SHARE\_GDP}), defined as the share of GDP invested in ICT assets 
+\parencite{oecd2022ict}.
+
+Control variables:
+\begin{itemize}
+  \item \textbf{GDP per capita} (\texttt{GDP\_PER\_CAPITA}): measures economic prosperity 
+  \parencite{oecd2022gdp}.
+  \item \textbf{Trade union density} (\texttt{PERCENT\_EMPLOYEES\_TUD}): captures collective 
+  bargaining strength \parencite{oecd2022tud}.
+  \item \textbf{Tertiary education share} (\texttt{PERCENT\_TERTIARY\_EDUCATION}): proxy for 
+  human capital \parencite{oecd2022education}.
+  \item \textbf{Labor market regulation} (\texttt{REGULATION\_STRICTNESS}): degree of employment 
+  protection \parencite{oecd2022regulation}.
+  \item \textbf{Welfare state type} (\texttt{WELFARE\_STATE}): Nordic, Central European, 
+  Anglo-Saxon, Southern European, Post-socialist \parencite{espingandersen1990thethree}.
+\end{itemize}
+
+\subsection{Analytical Strategy}
+
+We apply fixed-effects (FE) panel models to estimate the impact of ICT investment on unemployment 
+by education level. FE models control for unobserved country-specific heterogeneity and focus on 
+within-country variation over time. Random-effects models are not used due to potential 
+correlation between unobserved heterogeneity and explanatory variables 
+\parencite{wooldridge2010econometric}.
+
+We include year fixed effects to account for macroeconomic shocks and technological trends. 
+Interaction terms between ICT investment and welfare state type allow us to assess institutional 
+moderation of ICT effects on labor markets.

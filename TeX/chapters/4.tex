@@ -1,0 +1,113 @@
+%%%%%%%%%%%
+% Results %
+
+%%%%%%%%%%%
+
+\section{Results}
+
+\subsection{Descriptive Results}
+
+Table~\ref{tab:summary} presents descriptive statistics for the key variables across the sample of 
+35 OECD and selected partner countries (2005–2022). ICT investments range from 0.7\% to 8.7\% of GDP, 
+with a mean of 2.5\%. Unemployment rates vary substantially, with a mean of 8\% and values ranging 
+between 0.8\% and 50\%. GDP per capita shows significant dispersion, ranging from 13.3k to 137.7k 
+USD (mean: 43.7k USD). Trade union density and tertiary education shares also display considerable 
+cross-country heterogeneity.
+
+\begin{table}[H]
+\centering
+\caption{Descriptive statistics (2005–2022)}
+\label{tab:summary}
+\begin{tabular}{lcccc}
+\toprule
+Variable & Mean & SD & Min & Max \\
+\midrule
+ICT investment (\% of GDP) & 2.46 & 0.98 & 0.73 & 8.69 \\
+Unemployment rate (\%) & 7.95 & 6.34 & 0.82 & 49.89 \\
+GDP per capita (1000 USD) & 43.73 & 17.13 & 13.34 & 137.72 \\
+Union density (\%) & 28.45 & 20.71 & 4.50 & 92.20 \\
+Tertiary education share (\%) & 33.65 & 9.27 & 12.87 & 59.96 \\
+Labor regulation (0-6) & 2.19 & 0.83 & 0.00 & 4.88 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Country-level trends reveal substantial differences. For example, Sweden shows persistently high ICT 
+investment (4–5\% of GDP) and low unemployment among high-skilled workers. Spain illustrates stronger 
+cyclical effects, with low-skilled unemployment peaking during crises, while ICT investment increased 
+moderately over time. Poland experienced declining unemployment across all skill groups alongside 
+relatively stable ICT investment. These patterns suggest that macroeconomic context and institutional 
+settings, rather than ICT investment alone, drive short-term employment dynamics.
+
+Figure~\ref{fig:plots} illustrates these relationships for selected countries representing different 
+welfare regimes. The plots highlight variation in unemployment trajectories by education and modest 
+correlations with ICT investment levels.
+
+\begin{figure}[H]
+\centering
+\caption{ICT investment and unemployment trends by education in selected countries}
+\label{fig:plots}
+\end{figure}
+
+\subsection{Descriptive Results}
+
+\section{Multivariate Results}
+
+Table~\ref{tab:models_control} summarizes the fixed-effects models with controls. ICT investment 
+shows a positive and significant association with unemployment across all education groups: 
+low-skilled (2.302***), medium-skilled (1.157***), and high-skilled (0.455***). The strongest 
+association is found for low-skilled workers, supporting the hypothesis that digitalization 
+disproportionately affects routine and low-skill jobs.
+
+\begin{table}[H]
+\centering
+\caption{Fixed-effects models with controls}
+\label{tab:models_control}
+\begin{tabular}{lccc}
+\toprule
+ & Low skill & Medium skill & High skill \\
+\midrule
+ICT investment & 2.302*** & 1.157*** & 0.455*** \\
+GDP per capita & -0.194*** & -0.153*** & -0.083*** \\
+Tertiary share & 0.606*** & 0.282*** & 0.140*** \\
+Union density & 0.128*** & 0.106*** & 0.025+ \\
+Labor regulation & -0.147 & -0.118* & -0.085* \\
+R$^2$ & 0.304 & 0.308 & 0.272 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+ICT investments are associated with higher unemployment in flexible labor markets (Anglo-Saxon 
+countries). Interaction models (Table~\ref{tab:models_interaction}) show that institutional settings 
+significantly moderate these effects. In post-socialist states, ICT investment effects on 
+unemployment are significantly weaker compared to Anglo-Saxon regimes (e.g., -5.200*** for 
+low-skilled). In Southern European states, ICT investments are linked to lower unemployment for 
+medium- and high-skilled workers. Nordic states show a small positive interaction for high-skilled 
+unemployment (+0.639*), possibly reflecting fast digital transitions that challenge even highly 
+educated workers.
+
+\begin{table}[H]
+\centering
+\caption{Interaction models: ICT investment $\times$ welfare regime}
+\label{tab:models_interaction}
+\begin{tabular}{lccc}
+\toprule
+ & Low skill & Medium skill & High skill \\
+\midrule
+ICT investment (base: Anglo-Saxon) & 4.671*** & 3.246*** & 1.259*** \\
+$\times$ Post-socialist & -5.200*** & -3.579*** & -1.415*** \\
+$\times$ Central European & -0.871 & -0.594 & -0.302 \\
+$\times$ Nordic & 0.220 & -0.317 & 0.639* \\
+$\times$ Southern European & -1.801 & -3.066*** & -2.880*** \\
+R$^2$ & 0.337 & 0.333 & 0.306 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Macroeconomic controls, such as GDP per capita, remain robust and negative across models, indicating 
+that stronger economies are associated with lower unemployment. The inclusion of welfare regime 
+interactions increases the explanatory power (R$^2$) by about 3-5 percentage points, highlighting 
+the relevance of institutional context in shaping the employment effects of digitalization.
+
+Overall, the findings suggest that ICT investments contribute to labor market polarization but that 
+institutional factors can buffer or amplify these effects depending on the welfare regime.

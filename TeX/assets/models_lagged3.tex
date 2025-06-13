@@ -1,0 +1,41 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={+ p \num{< 0.1}, * p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]},
+column{2,3,4}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{20}={1,2,3,4}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& niedriges Bildungsniveau (3-Y-Lag) & mittleres Bildungsniveau (3-Y-Lag) & hohes Bildungsniveau (3-Y-Lag) \\ \midrule %% TinyTableHeader
+ICT\_INVEST\_SHARE\_GDP\_L3                                    & \num{4.846}***  & \num{2.935}***  & \num{1.265}***  \\
+& (\num{0.584})   & (\num{0.359})   & (\num{0.214})   \\
+GDP\_PER\_CAPITA                                                 & \num{-0.181}*** & \num{-0.153}*** & \num{-0.085}*** \\
+& (\num{0.018})   & (\num{0.012})   & (\num{0.007})   \\
+PERCENT\_TERTIARY\_EDUCATION                                     & \num{0.602}***  & \num{0.254}***  & \num{0.121}***  \\
+& (\num{0.051})   & (\num{0.032})   & (\num{0.019})   \\
+REGULATION\_STRICTNESS                                            & \num{-0.143}    & \num{-0.115}*   & \num{-0.089}**  \\
+& (\num{0.092})   & (\num{0.058})   & (\num{0.034})   \\
+PERCENT\_EMPLOYEES\_TUD                                          & \num{0.100}**   & \num{0.064}**   & \num{0.013}     \\
+& (\num{0.039})   & (\num{0.025})   & (\num{0.015})   \\
+ICT\_INVEST\_SHARE\_GDP\_L3 × WELFARE\_STATECentral European  & \num{0.582}     & \num{-0.387}    & \num{-0.166}    \\
+& (\num{0.733})   & (\num{0.457})   & (\num{0.270})   \\
+ICT\_INVEST\_SHARE\_GDP\_L3 × WELFARE\_STATENordic            & \num{-0.144}    & \num{-0.152}    & \num{0.593}+    \\
+& (\num{0.856})   & (\num{0.527})   & (\num{0.313})   \\
+ICT\_INVEST\_SHARE\_GDP\_L3 × WELFARE\_STATEPost-socialist    & \num{-5.557}*** & \num{-3.494}*** & \num{-1.543}*** \\
+& (\num{0.672})   & (\num{0.417})   & (\num{0.251})   \\
+ICT\_INVEST\_SHARE\_GDP\_L3 × WELFARE\_STATESouthern European & \num{1.720}     & \num{-3.134}*** & \num{-2.973}*** \\
+& (\num{1.083})   & (\num{0.665})   & (\num{0.392})   \\
+Num.Obs.                                                           & \num{3955}      & \num{3925}      & \num{3949}      \\
+R2                                                                 & \num{0.336}     & \num{0.339}     & \num{0.308}     \\
+R2 Adj.                                                            & \num{0.327}     & \num{0.330}     & \num{0.298}     \\
+AIC                                                                & \num{21115.0}   & \num{17287.7}   & \num{13325.1}   \\
+BIC                                                                & \num{21284.6}   & \num{17457.1}   & \num{13494.7}   \\
+RMSE                                                               & \num{3.47}      & \num{2.17}      & \num{1.30}      \\
+\bottomrule
+\end{talltblr}
+\end{table}

@@ -1,0 +1,34 @@
+# Project directories and files
+*/output/*Arbeitsversion*.pdf
+*/output/assets
+*/output/chapters
+*/literature
+*_old.tex
+*_old.R
+*signature*.pdf
+
+# TeX output files
+*.fdb_latexmk
+*.synctex*
+*.bcf*
+*.bbl*
+*.bbl
+*.aux
+*.log
+*.out
+*.xml
+*.bcf
+*.blg
+*.fls
+*.ist
+*.glo
+*.glg
+*.gls
+*.acn
+*.toc
+*.gz
+
+# R output files
+.Rproj.user
+.Rhistory
+.Ruserdata
