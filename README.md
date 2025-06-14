@@ -1,69 +1,85 @@
-<!-- TODO: - (Stand 04.03.2025) -->
-
-# Bachelorarbeit – Politikwissenschaften B.A.
-**Titel:** Der Einfluss von ICT-Investitionen auf die Arbeitslosigkeit in verschiedenen Bildungsgruppen in OECD-Ländern\
-**Autor:** Tobias A. Rau\
-**Matrikelnummer:** 6619097\
-**Universität:** Goethe-Universität Frankfurt\
-**Fachbereich:** Fachbereich 03 – Geisteswissenschaften\
-**Studiengang:** Politikwissenschaften B.A. (Nebenfach Soziologie)\
-**Abgabedatum:** 25.03.2025\
-**Projektarchivierung:** [GitHub Repository](https://github.com/TAR-IT/powi-bachelorthesis)
+# ICT Investment and Unemployment in Welfare States  
+**Author:** Tobias A. Rau  
+**Repository:** [GitHub Project Archive](https://github.com/TAR-IT/ict-investment-and-unemployment)
 
 ---
+
+## Project Overview
+
+This research project analyzes how national **investments in information and communication technologies (ICT)** affect **unemployment across different educational groups** in OECD and selected partner countries. The empirical analysis is based on **panel data from 2005–2022** and applies **fixed-effects models** with interaction terms for welfare state regimes and time lags (1–8 years), focusing on a **3-year lag** as the preferred specification.
+
+### Research Question
+
+> *How does national ICT investment influence unemployment rates across educational levels in different welfare state regimes?*
+
+### Hypotheses
+
+- **H1:** Countries with higher ICT investment experience lower unemployment among high-skilled workers.
+- **H2:** ICT investment increases unemployment among low-skilled workers due to task automation.
+- **H3:** Welfare state institutions moderate these effects—Nordic and coordinated market economies reduce polarization, while liberal regimes show stronger inequalities.
+
 ---
 
-## Projektbeschreibung
+## Data & Methodology
 
-Diese Bachelorarbeit untersucht den Zusammenhang zwischen **Investitionen in Informations- und Kommunikationstechnologie (ICT)** und der **Arbeitslosigkeit in verschiedenen Bildungsniveaus** in OECD-Ländern. Die Analyse basiert auf **Paneldaten (2005–2022)** und verwendet **Fixed Effects-Modelle** mit Interaktionseffekten zur empirischen Untersuchung der Hypothesen.
+### Data Sources
 
-### Forschungsfrage
+- OECD panel data (2005–2022) covering:
+  - Unemployment by education
+  - ICT investment (% of GDP)
+  - GDP per capita
+  - Union density
+  - Tertiary education share
+  - Labor market regulation
+- 35 countries including OECD and selected partner states (e.g., Brazil, Bulgaria, Romania, Croatia)
 
-> *Wie beeinflussen nationale Investitionen in Informations- und Kommunikationstechnologien die Arbeitslosenquoten verschiedener Bildungsniveaus in Wohlfahrtsstaaten?*
+### Statistical Approach
 
-### Hypothesen
+- Fixed-effects panel regression (`plm`) with:
+  - Interaction terms: `ICT × welfare state regime`
+  - Lags: 0–8 years (preferred: 3-year lag)
+  - Controls: GDP per capita, education, labor market regulation, union density
+  - Year dummies removed due to multicollinearity (controlled via panel structure)
 
-- **H1:** Länder, in denen verstärkt in Informations- und Kommunikationstechnologien investiert wird, weisen eine geringere Arbeitslosenquote unter hochqualifizierten Arbeitskräften auf.
-- **H2:** In Ländern mit hohen ICT-Investitionen verlagert sich die Arbeitslosigkeit auf niedrigqualifizierte Arbeitskräfte.
-- **H3:** Der Typ des Wohlfahrtsstaates hat Einfluss auf die Polarisierung des Arbeitsmarktes. Länder mit stark entwickelten wohlfahrtsstaatlichen Systemen und flexiblen Arbeitsmarktstrukturen zeigen eine geringere Polarisierung auf.
+---
 
-### Daten & Methodik
+## Repository Structure
 
-#### **Datenquellen**
+### `R/script.R`
 
-- **OECD-Paneldaten** zu 35 OECD- und 
-ausgewählte Nicht-OECD-Länder von 2005–2022 (Arbeitslosenquoten, ICT-Investitionen, BIP, Gewerkschaftsdichte, Tertiärer Bildungsanteil, Regulierungsstrenge des Arbeitsmarktes)
+- Prepares and cleans all datasets
+- Creates lag variables and performs interpolation
+- Executes all statistical models (with and without lag)
+- Outputs LaTeX-ready tables (`assets/*.tex`)
 
-## Projektstruktur
+### `R/data/`
 
-### **R-Codebook** (`R/script.R`)
+- Contains raw and preprocessed datasets from OECD sources
+- Filtering and merging handled via `script.R`
 
-- Enthält alle relevanten Datenverarbeitungsschritte
-- Definition der Variablen und Transformationen
-- Beschreibung der Datenquellen
-- Speichern und Laden der bereinigten Daten
-- Durchführung der statistischen Analysen
+### `TeX/`
 
-### **Datensätze** (`R/data/`)
+- Main LaTeX file: `main.tex` (full academic article)
+- Chapters organized in `chapters/`
+- Output: article-ready PDF for journal submission
 
-- Enthält alle in der Analyse genutzen Datensätze
-- Die Datensätze enthalten ungefilterte Rohdaten
-- Die Filterung überfolgt durch den Code im R-Codebook
+---
 
-## Anforderungen
+## Technologies Used
 
-### Genutzte Technologien
+- [**R**](https://www.r-project.org/)
+  - Panel data analysis (`plm`, `dplyr`, `modelsummary`)
+  - Visualization (for internal validation, not used in final article)
+- [**RStudio**](https://posit.co/download/rstudio-desktop/)
+  - Integrated development environment for R
+- [**LaTeX**](https://www.latex-project.org/)
+  - Used for academic paper typesetting
 
-- [R programming language](https://www.r-project.org/)
-    - R wurde für die Paneldatenanalyse genutzt.
-    - Erforderliche R-Pakete: `ggplot2`, `zoo`, `plm`, `dplyr`, `modelsummary`, `knitr`, `kableExtra`
-- [RStudio](https://posit.co/download/rstudio-desktop/)
-    - RStudio wurde als interaktive Entwicklerumgebung für R genutzt.
-- [LaTeX](https://www.latex-project.org/)
-    - LaTeX wurde zur Erstellung des PDF-Dokumentes genutzt.
+---
 
-### Installation/Reproduzierung
-1. Repository klonen/herunterladen und entpacken.
-2. Die Datei `R/Data.Rproj` ausführen um das Projekt in RStudio zu öffnen.
-3. `R/script.R` in RStudio ausführen.
-4. `TeX/main.tex` per Recipe "pdflatex -> bibtex  -> pdflatex" kompilieren.
+## Reproduction Instructions
+
+1. Clone or download the repository.
+2. Open the RStudio project: `R/Data.Rproj`.
+3. Run `R/script.R` to prepare the data and generate model tables.
+4. Compile the article via `TeX/main.tex` using the recipe:
