@@ -2,6 +2,10 @@
 **Author:** Tobias A. Rau  
 **Repository:** [GitHub Project Archive](https://github.com/TAR-IT/ict-investment-and-unemployment)
 
+This is a preprint version of a manuscript intended for submission to *Information Economics and Policy*.  
+It has not been peer-reviewed or accepted.  
+Please do not cite without permission.  
+
 ---
 
 ## Project Overview
