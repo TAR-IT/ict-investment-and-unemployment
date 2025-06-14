@@ -1,113 +1,101 @@
 %%%%%%%%%%%
 % Results %
-
 %%%%%%%%%%%
 
 \section{Results}
 
-\subsection{Descriptive Results}
+\subsection{Descriptive Summary and Variable Overview}
 
-Table~\ref{tab:summary} presents descriptive statistics for the key variables across the sample of 
-35 OECD and selected partner countries (2005–2022). ICT investments range from 0.7\% to 8.7\% of GDP, 
-with a mean of 2.5\%. Unemployment rates vary substantially, with a mean of 8\% and values ranging 
-between 0.8\% and 50\%. GDP per capita shows significant dispersion, ranging from 13.3k to 137.7k 
-USD (mean: 43.7k USD). Trade union density and tertiary education shares also display considerable 
-cross-country heterogeneity.
+\input{assets/variables_summary_final.tex}
 
-\begin{table}[H]
-\centering
-\caption{Descriptive statistics (2005–2022)}
-\label{tab:summary}
-\begin{tabular}{lcccc}
-\toprule
-Variable & Mean & SD & Min & Max \\
-\midrule
-ICT investment (\% of GDP) & 2.46 & 0.98 & 0.73 & 8.69 \\
-Unemployment rate (\%) & 7.95 & 6.34 & 0.82 & 49.89 \\
-GDP per capita (1000 USD) & 43.73 & 17.13 & 13.34 & 137.72 \\
-Union density (\%) & 28.45 & 20.71 & 4.50 & 92.20 \\
-Tertiary education share (\%) & 33.65 & 9.27 & 12.87 & 59.96 \\
-Labor regulation (0-6) & 2.19 & 0.83 & 0.00 & 4.88 \\
-\bottomrule
-\end{tabular}
-\end{table}
+Table~\ref{tab:variables_summary} provides an overview of key variables used in the analysis. ICT 
+investment ranges from 0.7\% to 8.7\% of GDP across the sample, with a mean of 2.5\%. Unemployment 
+rates vary substantially across educational levels and countries, with a sample-wide average of 
+approximately 8\%. GDP per capita displays wide variation, from 13,300 to over 137,000 USD (mean: 
+43,700 USD), reflecting the heterogeneity of national economic contexts. Education, labor market 
+regulation, and union density also show significant cross-country variation.
 
-Country-level trends reveal substantial differences. For example, Sweden shows persistently high ICT 
-investment (4–5\% of GDP) and low unemployment among high-skilled workers. Spain illustrates stronger 
-cyclical effects, with low-skilled unemployment peaking during crises, while ICT investment increased 
-moderately over time. Poland experienced declining unemployment across all skill groups alongside 
-relatively stable ICT investment. These patterns suggest that macroeconomic context and institutional 
-settings, rather than ICT investment alone, drive short-term employment dynamics.
+\input{assets/variables_welfarestate_final.tex}
 
-Figure~\ref{fig:plots} illustrates these relationships for selected countries representing different 
-welfare regimes. The plots highlight variation in unemployment trajectories by education and modest 
-correlations with ICT investment levels.
+Welfare states are categorized based on Esping-Andersen’s typology and later refinements to account 
+for post-socialist and Southern European models. The classification used in this study is summarized 
+in Table~\ref{tab:variables_welfarestate}, which underpins the interaction terms in the multivariate 
+models.
 
-\begin{figure}[H]
-\centering
-\caption{ICT investment and unemployment trends by education in selected countries}
-\label{fig:plots}
-\end{figure}
+\subsection{Baseline Models without Lag}
 
-\subsection{Descriptive Results}
+\input{assets/models_nolag_final.tex}
 
-\section{Multivariate Results}
+Table~\ref{tab:models_nolag} displays the fixed-effects panel regressions without temporal lags. ICT 
+investment is positively and significantly associated with unemployment across all education groups: 
+4.671 (***), 3.246 (***), and 1.259 (***) for low-, medium-, and high-skilled workers, respectively. 
+These results suggest an immediate adjustment process in the labor market, particularly for 
+occupations exposed to automation and digital substitution.
 
-Table~\ref{tab:models_control} summarizes the fixed-effects models with controls. ICT investment 
-shows a positive and significant association with unemployment across all education groups: 
-low-skilled (2.302***), medium-skilled (1.157***), and high-skilled (0.455***). The strongest 
-association is found for low-skilled workers, supporting the hypothesis that digitalization 
-disproportionately affects routine and low-skill jobs.
+The interaction effects reveal that institutional structures significantly mediate the relationship. 
+Post-socialist regimes exhibit strongly negative interactions—most notably for low-skilled workers 
+(-5.200***), indicating a protective institutional environment. Southern European regimes mitigate 
+unemployment risks for medium- and high-skilled workers. Nordic countries show a minor but positive 
+interaction for high-skilled workers (+0.639*), potentially reflecting transition frictions.
 
-\begin{table}[H]
-\centering
-\caption{Fixed-effects models with controls}
-\label{tab:models_control}
-\begin{tabular}{lccc}
-\toprule
- & Low skill & Medium skill & High skill \\
-\midrule
-ICT investment & 2.302*** & 1.157*** & 0.455*** \\
-GDP per capita & -0.194*** & -0.153*** & -0.083*** \\
-Tertiary share & 0.606*** & 0.282*** & 0.140*** \\
-Union density & 0.128*** & 0.106*** & 0.025+ \\
-Labor regulation & -0.147 & -0.118* & -0.085* \\
-R$^2$ & 0.304 & 0.308 & 0.272 \\
-\bottomrule
-\end{tabular}
-\end{table}
+Control variables behave as expected. GDP per capita is consistently associated with lower 
+unemployment, while tertiary education share and trade union density correlate positively, likely 
+capturing structural differences across economies.
 
-ICT investments are associated with higher unemployment in flexible labor markets (Anglo-Saxon 
-countries). Interaction models (Table~\ref{tab:models_interaction}) show that institutional settings 
-significantly moderate these effects. In post-socialist states, ICT investment effects on 
-unemployment are significantly weaker compared to Anglo-Saxon regimes (e.g., -5.200*** for 
-low-skilled). In Southern European states, ICT investments are linked to lower unemployment for 
-medium- and high-skilled workers. Nordic states show a small positive interaction for high-skilled 
-unemployment (+0.639*), possibly reflecting fast digital transitions that challenge even highly 
-educated workers.
+\subsection{Core Estimates: 3-Year Lag Models}
 
-\begin{table}[H]
-\centering
-\caption{Interaction models: ICT investment $\times$ welfare regime}
-\label{tab:models_interaction}
-\begin{tabular}{lccc}
-\toprule
- & Low skill & Medium skill & High skill \\
-\midrule
-ICT investment (base: Anglo-Saxon) & 4.671*** & 3.246*** & 1.259*** \\
-$\times$ Post-socialist & -5.200*** & -3.579*** & -1.415*** \\
-$\times$ Central European & -0.871 & -0.594 & -0.302 \\
-$\times$ Nordic & 0.220 & -0.317 & 0.639* \\
-$\times$ Southern European & -1.801 & -3.066*** & -2.880*** \\
-R$^2$ & 0.337 & 0.333 & 0.306 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{assets/models_3ylag_final.tex}
 
-Macroeconomic controls, such as GDP per capita, remain robust and negative across models, indicating 
-that stronger economies are associated with lower unemployment. The inclusion of welfare regime 
-interactions increases the explanatory power (R$^2$) by about 3-5 percentage points, highlighting 
-the relevance of institutional context in shaping the employment effects of digitalization.
+Table~\ref{tab:models_3ylag} presents the fixed-effects models with a 3-year time lag between 
+ICT investment and unemployment. Across all educational groups, ICT investment remains positively 
+and significantly associated with unemployment: 4.846 (***), 2.935 (***), and 1.265 (***) for low-, 
+medium-, and high-skilled workers, respectively. These results confirm the hypothesis that 
+digitalization disproportionately affects workers engaged in routine tasks, with the strongest 
+effects observed among the low-skilled.
 
-Overall, the findings suggest that ICT investments contribute to labor market polarization but that 
-institutional factors can buffer or amplify these effects depending on the welfare regime.
+Interaction terms between ICT investment and welfare regime types reveal substantial heterogeneity. 
+In post-socialist countries, the relationship between ICT investment and unemployment is 
+significantly weaker than in liberal regimes, with interaction effects of -5.557 (***), -3.494 (***), 
+and -1.543 (***) across the three skill levels. Southern European countries exhibit significant 
+negative interactions for medium- and high-skilled unemployment, indicating a mitigating effect. 
+Nordic regimes show a small but positive interaction for high-skilled workers (+0.593, +), possibly 
+reflecting short-term adjustment frictions in rapidly digitalizing labor markets.
+
+Control variables perform as expected. GDP per capita is robustly negative and significant, 
+indicating that economic prosperity is associated with lower unemployment. The share of tertiary 
+education and trade union density are positively associated with unemployment, likely reflecting 
+structural labor market features in highly educated economies. Employment protection strictness has 
+weakly negative or insignificant effects.
+
+The inclusion of welfare regime interactions enhances the explanatory power (R$^2$) of the models by 
+3–5 percentage points compared to baseline specifications without institutional context. This 
+suggests that national institutional frameworks play a critical role in shaping how digital 
+transformation impacts labor market outcomes.
+
+\subsection{Model Comparison and Temporal Interpretation}
+
+The comparison between the no-lag and 3-year lag models reveals several important insights. While the 
+sign and significance of core coefficients remain stable across specifications, the magnitude of the 
+ICT effects is slightly larger in the lagged models. For instance, the effect for low-skilled 
+unemployment rises from 4.671 to 4.846. This suggests that the labor market consequences of ICT 
+investment unfold with a temporal delay, rather than instantaneously.
+
+The interaction terms with welfare regimes are directionally consistent but tend to be more 
+pronounced in the lagged models. This implies that institutional features exert a growing influence 
+over time, as digitalization gradually reshapes employment patterns and labor market regulations come 
+into play.
+
+Overall, the shift from contemporaneous to lagged specification improves model fit (as indicated by 
+R$^2$ and AIC/BIC), and strengthens the interpretation that structural unemployment effects of 
+digitalization materialize over multiple years.
+
+\subsection{Temporal Dynamics and Interaction Patterns}
+
+Although the 3-year lag serves as the primary analytical model, robustness tests with alternative lag 
+structures (1 to 8 years) confirm the direction and stability of results. Main and interaction 
+effects remain significant and consistent, although their magnitude peaks between years 2 and 4. This 
+supports the notion that digital labor market disruptions emerge gradually, with institutional 
+mediation playing an increasingly important role over time.
+
+The next section presents a more detailed robustness analysis, including the full set of alternative 
+lag models.

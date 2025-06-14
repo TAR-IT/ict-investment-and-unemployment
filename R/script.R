@@ -1,6 +1,6 @@
-##########################################
-#      Packages installieren & laden     #
-##########################################
+###########################
+# Install & load packages #
+###########################
 
 # Pakete definieren und installieren, falls notwendig
 required_packages <- c(
@@ -17,13 +17,13 @@ if (length(new_packages)) install.packages(new_packages)
 # Alle Pakete laden
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-##########################################
-#         Funktionen definieren          #
-##########################################
+####################
+# Define functions #
+####################
 
-# Funktion zur Beschreibung der Variablen
+# Function for describing variables
 describe_variables <- function(data, variables) {
-  options(scipen = 999) # Deaktiviert wissenschaftliche Notation
+  options(scipen = 999) # Deactivate scientific notation
   described_variables <- data.frame()
   for (var_name in variables) {
     variable <- data[[var_name]]
@@ -40,13 +40,13 @@ describe_variables <- function(data, variables) {
       described_variables <- rbind(described_variables, summary_stats)
     } else {
       warning(paste("Variable", var_name,
-                    "ist nicht numerisch und wurde übersprungen."))
+                    "is not numeric and was skipped."))
     }
   }
   return(described_variables)
 }
 
-# Funktion zur Beschreibung kategorialer Variablen
+# Function for describing categorial variables
 describe_welfarestate <- function(data, variable) {
   table_data <- table(data[[variable]])
   freq_table <- data.frame(
@@ -57,75 +57,62 @@ describe_welfarestate <- function(data, variable) {
   return(freq_table)
 }
 
-# Funktion für deskriptive Visualisierung pro Land
+# Function for descriptive visualisation per country
 plot_country_data <- function(data, country_name) {
-  # Mapping für deutsche Ländernamen in den Plots
-  country_map <- c("Spain" = "Spanien", "Poland" = "Polen",
-                   "Sweden" = "Schweden", "Germany" = "Deutschland",
-                   "United Kingdom" = "Großbritannien")
-  # Falls das Land in der Map existiert, nutze den deutschen Namen
-  display_name <- ifelse(country_name %in% names(country_map),
-                         country_map[[country_name]], country_name)
-  # Prüfe, ob die Variablen existieren
   required_vars <- c("ICT_INVEST_SHARE_GDP",
                      "UNEMPLOYMENT_RATE_PERCENT",
                      "YEAR_OF_OBSERVATION", "SUBJECT")
   missing_vars <- setdiff(required_vars, colnames(data))
   if (length(missing_vars) > 0) {
-    stop(paste("Fehlende Spalten im Datensatz:",
+    stop(paste("Missing columns in dataset:",
                paste(missing_vars, collapse = ", ")))
   }
-  # Daten filtern
+  # Filter data
   filtered_data <- data %>%
     filter(REFERENCE_AREA == country_name) %>%
     mutate(SUBJECT = recode(SUBJECT,
-                            "Tertiary" =
-                              "hohes Bildungsniveau",
-                            "Upper secondary, non-tertiary" =
-                              "mittleres Bildungsniveau",
-                            "Below upper secondary" =
-                              "niedriges Bildungsniveau")) %>%
-    mutate(SUBJECT = factor(SUBJECT, levels = c("niedriges Bildungsniveau",
-                                                "mittleres Bildungsniveau",
-                                                "hohes Bildungsniveau")))
-  # Prüfen, ob nach dem Filtern noch Daten vorhanden sind
+                            "Tertiary"
+                            = "High education",
+                            "Upper secondary, non-tertiary"
+                            = "Medium education",
+                            "Below upper secondary"
+                            = "Low education")) %>%
+    mutate(SUBJECT = factor(SUBJECT, levels = c("Low education",
+                                                "Medium education",
+                                                "High education")))
   if (nrow(filtered_data) == 0) {
-    stop(paste("Keine Daten gefunden für", country_name,
-               "in REFERENCE_AREA. Verfügbare Werte:",
+    stop(paste("No data found for", country_name,
+               "in REFERENCE_AREA. Available values:",
                paste(unique(data$REFERENCE_AREA), collapse = ", ")))
   }
-  # Skaliere die Werte nur, wenn sie existieren
   max_invest <- max(filtered_data$ICT_INVEST_SHARE_GDP, na.rm = TRUE)
   max_unemp <- max(filtered_data$UNEMPLOYMENT_RATE_PERCENT, na.rm = TRUE)
   ggplot(filtered_data, aes(x = YEAR_OF_OBSERVATION)) +
     geom_line(aes(y = ICT_INVEST_SHARE_GDP,
-                  color = "ICT-Investitionen (BIP-Anteil)"), size = 1) +
+                  color = "ICT investment (GDP share)"), size = 1) +
     geom_line(aes(y = UNEMPLOYMENT_RATE_PERCENT / max_unemp * max_invest,
-                  color = "Arbeitslosenquote"),
-              size = 1,
-              linetype = "dashed") +
+                  color = "Unemployment rate"),
+              size = 1, linetype = "dashed") +
     facet_wrap(~SUBJECT, scales = "free_y") +
     labs(
-      x = "Jahr", y = "ICT-Investitionen (BIP-Anteil)",
-      color = "Indikator"
+      x = "Year", y = "ICT investment (GDP share)",
+      color = "Indicator"
     ) +
     theme_minimal() +
     scale_x_continuous(
-      breaks = seq(min(filtered_data$YEAR_OF_OBSERVATION,
-                       na.rm = TRUE),
-                   max(filtered_data$YEAR_OF_OBSERVATION,
-                       na.rm = TRUE), 5)
+      breaks = seq(min(filtered_data$YEAR_OF_OBSERVATION, na.rm = TRUE),
+                   max(filtered_data$YEAR_OF_OBSERVATION, na.rm = TRUE), 5)
     ) +
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     scale_y_continuous(sec.axis = sec_axis(~ . / max_invest * max_unemp,
-                                           name = "Arbeitslosenquote (%)"))
+                                           name = "Unemployment rate (%)"))
 }
 
-##########################################
-#           Globale Variablen            #
-##########################################
+####################
+# Global variables #
+####################
 
-# Liste aller Länder für die Analyse
+# Country list for the analysis
 selected_countries <- c(
   "Australia", "Austria", "Belgium", "Bulgaria", "Brazil",
   "Canada", "Croatia", "Czechia", "Denmark", "Estonia",
@@ -137,28 +124,130 @@ selected_countries <- c(
   "United Kingdom", "United States"
 )
 
-# Liste aller Variablen für die Analyse
+# List of variables for the analysis
 variables <- c(
   "UNEMPLOYMENT_RATE_PERCENT", "ICT_INVEST_SHARE_GDP",
   "GDP_PER_CAPITA", "PERCENT_EMPLOYEES_TUD",
   "PERCENT_TERTIARY_EDUCATION", "REGULATION_STRICTNESS"
 )
 
-#############################################
-# Bereinigung und Zusammenführung der Daten #
-#############################################
+# Shortened variables for models
+coef_labels <- c(
+  # Variables
+  "ICT_INVEST_SHARE_GDP" = "ICT investment",
+  "ICT_INVEST_SHARE_GDP_L1" = "ICT investment (1Y lag)",
+  "ICT_INVEST_SHARE_GDP_L2" = "ICT investment (2Y lag)",
+  "ICT_INVEST_SHARE_GDP_L3" = "ICT investment (3Y lag)",
+  "ICT_INVEST_SHARE_GDP_L4" = "ICT investment (4Y lag)",
+  "ICT_INVEST_SHARE_GDP_L5" = "ICT investment (5Y lag)",
+  "ICT_INVEST_SHARE_GDP_L6" = "ICT investment (6Y lag)",
+  "ICT_INVEST_SHARE_GDP_L7" = "ICT investment (7Y lag)",
+  "ICT_INVEST_SHARE_GDP_L8" = "ICT investment (8Y lag)",
+  
+  # Interactions
+  "ICT_INVEST_SHARE_GDP:WELFARE_STATECentral European" =
+    "ICT × Central European",
+  "ICT_INVEST_SHARE_GDP:WELFARE_STATENordic" =
+    "ICT × Nordic",
+  "ICT_INVEST_SHARE_GDP:WELFARE_STATEPost-socialist" =
+    "ICT × Post-socialist",
+  "ICT_INVEST_SHARE_GDP:WELFARE_STATESouthern European" =
+    "ICT × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L1:WELFARE_STATECentral European" =
+    "ICT 1Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L1:WELFARE_STATENordic" =
+    "ICT 1Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L1:WELFARE_STATEPost-socialist" =
+    "ICT 1Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L1:WELFARE_STATESouthern European" =
+    "ICT 1Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L2:WELFARE_STATECentral European" =
+    "ICT 2Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L2:WELFARE_STATENordic" =
+    "ICT 2Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L2:WELFARE_STATEPost-socialist" =
+    "ICT 2Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L2:WELFARE_STATESouthern European" =
+    "ICT 2Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L3:WELFARE_STATECentral European" =
+    "ICT 3Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L3:WELFARE_STATENordic" =
+    "ICT 3Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L3:WELFARE_STATEPost-socialist" =
+    "ICT 3Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L3:WELFARE_STATESouthern European" =
+    "ICT 3Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L4:WELFARE_STATECentral European" =
+    "ICT 4Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L4:WELFARE_STATENordic" =
+    "ICT 4Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L4:WELFARE_STATEPost-socialist" =
+    "ICT 4Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L4:WELFARE_STATESouthern European" =
+    "ICT 4Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L5:WELFARE_STATECentral European" =
+    "ICT 5Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L5:WELFARE_STATENordic" =
+    "ICT 5Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L5:WELFARE_STATEPost-socialist" =
+    "ICT 5Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L5:WELFARE_STATESouthern European" =
+    "ICT 5Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L6:WELFARE_STATECentral European" =
+    "ICT 6Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L6:WELFARE_STATENordic" =
+    "ICT 6Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L6:WELFARE_STATEPost-socialist" =
+    "ICT 6Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L6:WELFARE_STATESouthern European" =
+    "ICT 6Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L7:WELFARE_STATECentral European" =
+    "ICT 7Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L7:WELFARE_STATENordic" =
+    "ICT 7Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L7:WELFARE_STATEPost-socialist" =
+    "ICT 7Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L7:WELFARE_STATESouthern European" =
+    "ICT 7Y lag × Southern European",
+  
+  "ICT_INVEST_SHARE_GDP_L8:WELFARE_STATECentral European" =
+    "ICT 8Y lag × Central European",
+  "ICT_INVEST_SHARE_GDP_L8:WELFARE_STATENordic" =
+    "ICT 8Y lag × Nordic",
+  "ICT_INVEST_SHARE_GDP_L8:WELFARE_STATEPost-socialist" =
+    "ICT 8Y lag × Post-socialist",
+  "ICT_INVEST_SHARE_GDP_L8:WELFARE_STATESouthern European" =
+    "ICT 8Y lag × Southern European",
+  
+  # Controls
+  "GDP_PER_CAPITA" = "GDP per capita",
+  "PERCENT_TERTIARY_EDUCATION" = "% tertiary education",
+  "REGULATION_STRICTNESS" = "Employment protection strictness",
+  "PERCENT_EMPLOYEES_TUD" = "% trade union density"
+)
 
-# OECD-Datensatz zu Arbeitslosenquoten
+#################################
+# Loading and cleaning datasets #
+#################################
+
+# OECD dataset for unemployment rate
 data_unemp <- read.table(
   "data/OECD_unemployment_rates_by_education_level_annual_2000-2022.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
 ) %>%
-  # Filtern nach ausgewählten Ländern und Zeiträumen
+  # Filter by countries and time period
   filter(
     Country %in% selected_countries,
     TIME_PERIOD >= 2005 & TIME_PERIOD <= 2022
   ) %>%
-  # Wohlfahrtsstaat-Kategorisierung und Typkonvertierung
+  # Welfare state categorization
   mutate(
     WELFARE_STATE = case_when(
       Country %in% c("Denmark", "Sweden",
@@ -175,7 +264,7 @@ data_unemp <- read.table(
                      "Slovak Republic", "Slovenia",
                      "Estonia", "Latvia", "Lithuania",
                      "Romania", "Bulgaria") ~ "Post-socialist",
-      TRUE ~ "Other"  # Falls Länder fehlen, werden sie kategorisiert
+      TRUE ~ "Other"  # If countries are not categorized
     ),
     WELFARE_STATE = as.factor(WELFARE_STATE),
     REFERENCE_AREA = as.character(Country),
@@ -183,11 +272,11 @@ data_unemp <- read.table(
     YEAR_OF_OBSERVATION = as.integer(TIME_PERIOD),
     UNEMPLOYMENT_RATE_PERCENT = OBS_VALUE
   ) %>%
-  # Entferne nicht benötigte Spalten und ordne sie neu
+  # Delete unnessecary rows and reorder
   select(REFERENCE_AREA, WELFARE_STATE, YEAR_OF_OBSERVATION,
          SUBJECT, UNEMPLOYMENT_RATE_PERCENT)
 
-# OECD-Datensatz zu ICT-Investments
+# OECD dataset for ICT investments
 data_ictinvest <- read.table(
   "data/OECD_ict_investment_share_of_gdp_2000-2022.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
@@ -205,7 +294,7 @@ data_ictinvest <- read.table(
   ) %>%
   select(REFERENCE_AREA, YEAR_OF_OBSERVATION, ICT_INVEST_SHARE_GDP)
 
-# OECD-Datensatz zu GDPs
+# OECD dataset for GDPs
 data_gdp <- read.table(
   "data/OECD_gdp_2000-2023.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
@@ -221,7 +310,7 @@ data_gdp <- read.table(
   ) %>%
   select(REFERENCE_AREA, YEAR_OF_OBSERVATION, GDP_PER_CAPITA)
 
-# OECD-Datensatz zu Percentage of Tertiary Education
+# OECD dataset for percentage in tertiary education
 data_pte <- read.table(
   "data/OEDC_adults-educational-attainment-distribution_2000-2022.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
@@ -237,7 +326,7 @@ data_pte <- read.table(
   ) %>%
   select(REFERENCE_AREA, YEAR_OF_OBSERVATION, PERCENT_TERTIARY_EDUCATION)
 
-# OECD-Datensatz zu Regulation Strictness
+# OECD dataset for regulation strictness
 data_reg <- read.table(
   "data/OECD_strictness-of-employment-protection_2000-2022.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
@@ -253,7 +342,7 @@ data_reg <- read.table(
   ) %>%
   select(REFERENCE_AREA, YEAR_OF_OBSERVATION, REGULATION_STRICTNESS)
 
-# OECD-Datensatz zu Trade Union Density
+# OECD dataset for trade union densitry
 data_tud <- read.table(
   "data/OECD_trade_union_density_2000-2022.csv",
   header = TRUE, sep = ";", dec = ",", fileEncoding = "UTF-8"
@@ -269,11 +358,11 @@ data_tud <- read.table(
   ) %>%
   select(REFERENCE_AREA, YEAR_OF_OBSERVATION, PERCENT_EMPLOYEES_TUD)
 
-##################################
-# Zusammenführung der Datensätze #
-##################################
+####################
+# Merging datasets #
+####################
 
-# Einen Datensatz mit allen Daten erstellen
+# One dataset with all variables
 merged_data <- data_ictinvest %>%
   left_join(data_unemp, by = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")) %>%
   left_join(data_gdp, by = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")) %>%
@@ -281,7 +370,7 @@ merged_data <- data_ictinvest %>%
   left_join(data_reg, by = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")) %>%
   left_join(data_tud, by = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")) %>%
   group_by(REFERENCE_AREA) %>%
-  arrange(YEAR_OF_OBSERVATION) %>%  # Sortierung für Interpolation
+  arrange(YEAR_OF_OBSERVATION) %>%  # Sort for interpolation
   mutate(
     PERCENT_EMPLOYEES_TUD =
       na.approx(as.numeric(PERCENT_EMPLOYEES_TUD),
@@ -295,146 +384,76 @@ merged_data <- data_ictinvest %>%
       na.approx(as.numeric(REGULATION_STRICTNESS),
                 na.rm = FALSE,
                 rule = 2),
+    # Variables for lagged ICT investment
     ICT_INVEST_SHARE_GDP_L1 = lag(ICT_INVEST_SHARE_GDP, 1),
     ICT_INVEST_SHARE_GDP_L2 = lag(ICT_INVEST_SHARE_GDP, 2),
     ICT_INVEST_SHARE_GDP_L3 = lag(ICT_INVEST_SHARE_GDP, 3),
-    ICT_INVEST_SHARE_GDP_L4 = lag(ICT_INVEST_SHARE_GDP, 4)
+    ICT_INVEST_SHARE_GDP_L4 = lag(ICT_INVEST_SHARE_GDP, 4),
+    ICT_INVEST_SHARE_GDP_L5 = lag(ICT_INVEST_SHARE_GDP, 5),
+    ICT_INVEST_SHARE_GDP_L6 = lag(ICT_INVEST_SHARE_GDP, 6),
+    ICT_INVEST_SHARE_GDP_L7 = lag(ICT_INVEST_SHARE_GDP, 7),
+    ICT_INVEST_SHARE_GDP_L8 = lag(ICT_INVEST_SHARE_GDP, 8)
   ) %>%
-  ungroup() %>%  # Entgruppierung wegen Interpolation
+  ungroup() %>%
   mutate(
     SUBJECT = recode(
       SUBJECT,
-      "Below upper secondary" = "niedriges Bildungsniveau",
-      "Upper secondary, non-tertiary" = "mittleres Bildungsniveau",
-      "Tertiary" = "hohes Bildungsniveau"
+      "Below upper secondary" = "Low education",
+      "Upper secondary, non-tertiary" = "Medium education",
+      "Tertiary" = "High education"
     ),
-    # Dummy-Variable für Jahresfixeffekte
+    # Dummy variable for year fixed effects
     YEAR_FACTOR = relevel(factor(YEAR_OF_OBSERVATION), ref = "2005")
   )
 
-##########################################
-#         Übersicht über Variablen       #
-##########################################
+####################
+# Variable summary #
+####################
 
-# Beschreibung der Variablen
+# Describing variables
 described_variables <- describe_variables(merged_data, variables)
 described_welfarestates <- describe_welfarestate(merged_data, "WELFARE_STATE")
 
-# Ergebnisse anzeigen und speichern
+# Show and save results
 print(described_variables)
 writeLines(
   kable(described_variables,
     format = "latex",
     booktabs = TRUE,
-    caption = "Zusammenfassung der Variablen"
+    caption = "Summary of variables"
   ) %>%
     kable_styling(latex_options = c("hold_position")),
-  "../TeX/assets/variables.tex"
+  "../TeX/assets/variables_summary.tex"
 )
 
-# Erstelle die Tabelle für WELFARE_STATE
+# Summary of Welfare state variable
 print(described_welfarestates)
 writeLines(
   kable(described_welfarestates,
     format = "latex",
     booktabs = TRUE,
-    caption = "Übersicht über die Verteilung der Wohlfahrtsstaatentypen"
+    caption = "Overview of the distribution of welfare state types"
   ) %>%
     kable_styling(latex_options = c("hold_position")),
-  "../TeX/assets/variables_welfare.tex"
+  "../TeX/assets/variables_welfarestate.tex"
 )
 
-##########################################
-#       Länderspezifische Analyse        #
-##########################################
-
-# Spanien als Südeuropäischer Wohlfahrtsstaat
-plot_spain    <- plot_country_data(merged_data, "Spain")
-print(plot_spain)
-ggsave("../TeX/assets/plot_spain.png",
-       plot = plot_spain, width = 12, height = 3)
-
-# Polen als postsozialistischer Wohlfahrtsstaat
-plot_poland   <- plot_country_data(merged_data, "Poland")
-print(plot_poland)
-ggsave("../TeX/assets/plot_poland.png",
-       plot = plot_poland, width = 12, height = 3)
-
-# Schweden als nordischer Wohlfahrtsstaat
-plot_sweden   <- plot_country_data(merged_data, "Sweden")
-print(plot_sweden)
-ggsave("../TeX/assets/plot_sweden.png",
-       plot = plot_sweden, width = 12, height = 3)
-
-# Deutschland als konservativer Wohlfahrtsstaat
-plot_germany  <- plot_country_data(merged_data, "Germany")
-print(plot_germany)
-ggsave("../TeX/assets/plot_germany.png",
-       plot = plot_germany, width = 12, height = 3)
-
-# Großbritannien als angelsächsischer Wohlfahrtsstaat
-plot_uk       <- plot_country_data(merged_data, "United Kingdom")
-print(plot_uk)
-ggsave("../TeX/assets/plot_uk.png",
-       plot = plot_uk, width = 12, height = 3)
-
-##########################################
-#   Daten nach Bildungsgruppen filtern   #
-##########################################
+#############################################
+# Filter data according to education groups #
+#############################################
 
 filter_data_low     <- subset(merged_data, SUBJECT ==
-                                "niedriges Bildungsniveau")
+                                "Low education")
 filter_data_medium  <- subset(merged_data, SUBJECT ==
-                                "mittleres Bildungsniveau")
+                                "Medium education")
 filter_data_high    <- subset(merged_data, SUBJECT ==
-                                "hohes Bildungsniveau")
+                                "High education")
 
-#################################
-# Modelle mit Kontrollvariablen #
-#################################
+#############################
+# Models without time delay #
+#############################
 
-# Fixed Effects Modelle (mit Kontrollvariablen)
-model_low_fe_control    <- plm(
-  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP +
-    YEAR_FACTOR +
-    GDP_PER_CAPITA +
-    PERCENT_TERTIARY_EDUCATION +
-    REGULATION_STRICTNESS +
-    PERCENT_EMPLOYEES_TUD,
-  data = filter_data_low,
-  model = "within",
-  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
-)
-
-model_medium_fe_control <- plm(
-  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP +
-    YEAR_FACTOR +
-    GDP_PER_CAPITA +
-    PERCENT_TERTIARY_EDUCATION +
-    REGULATION_STRICTNESS +
-    PERCENT_EMPLOYEES_TUD,
-  data = filter_data_medium,
-  model = "within",
-  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
-)
-
-model_high_fe_control   <- plm(
-  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP +
-    YEAR_FACTOR +
-    GDP_PER_CAPITA +
-    PERCENT_TERTIARY_EDUCATION +
-    REGULATION_STRICTNESS +
-    PERCENT_EMPLOYEES_TUD,
-  data = filter_data_high,
-  model = "within",
-  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
-)
-
-############################################################
-# Fixed Effects Modelle mit Interaktionen und Jahresfaktor #
-############################################################
-
-model_low_fe_interaction    <- plm(
+model_low_nolag             <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -445,7 +464,7 @@ model_low_fe_interaction    <- plm(
   index = c("REFERENCE_AREA")
 )
 
-model_medium_fe_interaction <- plm(
+model_medium_nolag          <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -456,7 +475,7 @@ model_medium_fe_interaction <- plm(
   index = c("REFERENCE_AREA")
 )
 
-model_high_fe_interaction   <- plm(
+model_high_nolag            <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -467,11 +486,12 @@ model_high_fe_interaction   <- plm(
   index = c("REFERENCE_AREA")
 )
 
-#########################################################
-# Fixed Effects Modelle mit 1-Jahres-Lag & Interaktion  #
-#########################################################
+###########################
+# Models with time delay  #
+###########################
 
-model_low_fe_lagged1 <- plm(
+# 1-year-lag
+model_low_1ylag             <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L1 * WELFARE_STATE +
     YEAR_FACTOR + GDP_PER_CAPITA +
     PERCENT_TERTIARY_EDUCATION +
@@ -481,7 +501,7 @@ model_low_fe_lagged1 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_medium_fe_lagged1 <- plm(
+model_medium_1ylag          <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L1 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -492,7 +512,7 @@ model_medium_fe_lagged1 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_high_fe_lagged1 <- plm(
+model_high_1ylag            <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L1 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -503,11 +523,8 @@ model_high_fe_lagged1 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-#########################################################
-# Fixed Effects Modelle mit 2-Jahres-Lag & Interaktion  #
-#########################################################
-
-model_low_fe_lagged2 <- plm(
+# 2-year-lag
+model_low_2ylag             <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L2 * WELFARE_STATE +
     YEAR_FACTOR + GDP_PER_CAPITA +
     PERCENT_TERTIARY_EDUCATION +
@@ -517,7 +534,7 @@ model_low_fe_lagged2 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_medium_fe_lagged2 <- plm(
+model_medium_2ylag          <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L2 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -528,7 +545,7 @@ model_medium_fe_lagged2 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_high_fe_lagged2 <- plm(
+model_high_2ylag            <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L2 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -539,11 +556,8 @@ model_high_fe_lagged2 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-#########################################################
-# Fixed Effects Modelle mit 3-Jahres-Lag & Interaktion  #
-#########################################################
-
-model_low_fe_lagged3 <- plm(
+# 3-year-lag
+model_low_3ylag             <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L3 * WELFARE_STATE +
     YEAR_FACTOR + GDP_PER_CAPITA +
     PERCENT_TERTIARY_EDUCATION +
@@ -553,7 +567,7 @@ model_low_fe_lagged3 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_medium_fe_lagged3 <- plm(
+model_medium_3ylag          <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L3 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -564,7 +578,7 @@ model_medium_fe_lagged3 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_high_fe_lagged3 <- plm(
+model_high_3ylag            <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L3 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -575,11 +589,8 @@ model_high_fe_lagged3 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-#########################################################
-# Fixed Effects Modelle mit 4-Jahres-Lag & Interaktion  #
-#########################################################
-
-model_low_fe_lagged4 <- plm(
+# 4-year-lag
+model_low_4ylag             <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L4 * WELFARE_STATE +
     YEAR_FACTOR + GDP_PER_CAPITA +
     PERCENT_TERTIARY_EDUCATION +
@@ -589,7 +600,7 @@ model_low_fe_lagged4 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_medium_fe_lagged4 <- plm(
+model_medium_4ylag          <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L4 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -600,7 +611,7 @@ model_medium_fe_lagged4 <- plm(
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
 
-model_high_fe_lagged4 <- plm(
+model_high_4ylag            <- plm(
   UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L4 * WELFARE_STATE +
     YEAR_FACTOR +
     GDP_PER_CAPITA +
@@ -610,89 +621,264 @@ model_high_fe_lagged4 <- plm(
   data = filter_data_high, model = "within",
   index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
 )
+
+# 5-year-lag
+model_low_5ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L5 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_low, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_medium_5ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L5 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS +
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_medium, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_high_5ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L5 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_high, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+# 6-year-lag
+model_low_6ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L6 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_low, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_medium_6ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L6 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS +
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_medium, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_high_6ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L6 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_high, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+# 7-year-lag
+model_low_7ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L7 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_low, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_medium_7ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L7 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS +
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_medium, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_high_7ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L7 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_high, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+# 8-year-lag
+model_low_8ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L8 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_low, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_medium_8ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L8 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS +
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_medium, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
+model_high_8ylag <- plm(
+  UNEMPLOYMENT_RATE_PERCENT ~ ICT_INVEST_SHARE_GDP_L8 * WELFARE_STATE +
+    YEAR_FACTOR + GDP_PER_CAPITA +
+    PERCENT_TERTIARY_EDUCATION +
+    REGULATION_STRICTNESS + 
+    PERCENT_EMPLOYEES_TUD,
+  data = filter_data_high, model = "within",
+  index = c("REFERENCE_AREA", "YEAR_OF_OBSERVATION")
+)
+
 
 ########################################
-# Übersicht der Modelle und Ergebnisse #
+# Summary of models #
 ########################################
 
-# Liste für Kontrollmodelle
-control_models      <- list(
-  "niedriges\nBildungsniv.\n(Kontrolle)" = model_low_fe_control,
-  "mittleres\nBildungsniv.\n(Kontrolle)" = model_medium_fe_control,
-  "hohes\nBildungsniv.\n(Kontrolle)" = model_high_fe_control
+# List of models with no lag
+models_nolag <- list(
+  "Low\neducation\n(No lag)" =
+    model_low_nolag,
+  "Medium\neducation\n(No lag)" =
+    model_medium_nolag,
+  "High\neducation\n(No lag)" =
+    model_high_nolag
 )
 
-# Liste für Interaktionsmodelle
-interaction_models  <- list(
-  "niedriges\nBildungsniv.\n(Interaktion)" =
-    model_low_fe_interaction,
-  "mittleres\nBildungsniv.\n(Interaktion)" =
-    model_medium_fe_interaction,
-  "hohes\nBildungsniv.\n(Interaktion)" =
-    model_high_fe_interaction
+# List for models with lag
+models_1ylag <- list(
+  "Low\neducation" = model_low_1ylag,
+  "Medium\neducation" = model_medium_1ylag,
+  "High\neducation" = model_high_1ylag
 )
 
-# Liste für 1-Jahres-Lag-Modelle
-lagged1_models <- list(
-  "niedriges Bildungsniveau (1-Y-Lag)" = model_low_fe_lagged1,
-  "mittleres Bildungsniveau (1-Y-Lag)" = model_medium_fe_lagged1,
-  "hohes Bildungsniveau (1-Y-Lag)" = model_high_fe_lagged1
+models_2ylag <- list(
+  "Low\neducation" = model_low_2ylag,
+  "Medium\neducation" = model_medium_2ylag,
+  "High\neducation" = model_high_2ylag
 )
 
-# Liste für 2-Jahres-Lag-Modelle
-lagged2_models <- list(
-  "niedriges Bildungsniveau (2-Y-Lag)" = model_low_fe_lagged2,
-  "mittleres Bildungsniveau (2-Y-Lag)" = model_medium_fe_lagged2,
-  "hohes Bildungsniveau (2-Y-Lag)" = model_high_fe_lagged2
+models_3ylag <- list(
+  "Low\neducation" = model_low_3ylag,
+  "Medium\neducation" = model_medium_3ylag,
+  "High\neducation" = model_high_3ylag
 )
 
-# Liste für 3-Jahres-Lag-Modelle
-lagged3_models <- list(
-  "niedriges Bildungsniveau (3-Y-Lag)" = model_low_fe_lagged3,
-  "mittleres Bildungsniveau (3-Y-Lag)" = model_medium_fe_lagged3,
-  "hohes Bildungsniveau (3-Y-Lag)" = model_high_fe_lagged3
+models_4ylag <- list(
+  "Low\neducation" = model_low_4ylag,
+  "Medium\neducation" = model_medium_4ylag,
+  "High\neducation" = model_high_4ylag
 )
 
-# Liste für 4-Jahres-Lag-Modelle
-lagged4_models <- list(
-  "niedriges Bildungsniveau (4-Y-Lag)" = model_low_fe_lagged4,
-  "mittleres Bildungsniveau (4-Y-Lag)" = model_medium_fe_lagged4,
-  "hohes Bildungsniveau (4-Y-Lag)" = model_high_fe_lagged4
+models_5ylag <- list(
+  "Low\neducation" = model_low_5ylag,
+  "Medium\neducation" = model_medium_5ylag,
+  "High\neducation" = model_high_5ylag
 )
 
-# Ergebnisse anzeigen und speichern (ohne YEAR_FACTOR)
-msummary(control_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(control_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_control.tex")
+models_6ylag <- list(
+  "Low\neducation" = model_low_6ylag,
+  "Medium\neducation" = model_medium_6ylag,
+  "High\neducation" = model_high_6ylag
+)
 
-msummary(interaction_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(interaction_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_interaction.tex")
+models_7ylag <- list(
+  "Low\neducation" = model_low_7ylag,
+  "Medium\neducation" = model_medium_7ylag,
+  "High\neducation" = model_high_7ylag
+)
 
-msummary(lagged1_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(lagged1_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_lagged1.tex")
+models_8ylag <- list(
+  "Low\neducation" = model_low_8ylag,
+  "Medium\neducation" = model_medium_8ylag,
+  "High\neducation" = model_high_8ylag
+)
 
-msummary(lagged2_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(lagged2_models, stars = TRUE,
+# Show and save results (without YEAR_FACTOR)
+msummary(models_nolag, stars = TRUE,
          coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_lagged2.tex")
+         coef_map = coef_labels)
+msummary(models_nolag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_nolag.tex")
 
-msummary(lagged3_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(lagged3_models, stars = TRUE,
+msummary(models_1ylag, stars = TRUE,
          coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_lagged3.tex")
+         coef_map = coef_labels)
+msummary(models_1ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_1ylag.tex")
 
-msummary(lagged4_models, stars = TRUE,
-         coef_omit = "YEAR_FACTOR")
-msummary(lagged4_models, stars = TRUE,
+msummary(models_2ylag, stars = TRUE,
          coef_omit = "YEAR_FACTOR",
-         output = "../TeX/assets/models_lagged4.tex")
+         coef_map = coef_labels)
+msummary(models_2ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_2ylag.tex")
+
+msummary(models_3ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_3ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_3ylag.tex")
+
+msummary(models_4ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_4ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_4ylag.tex")
+
+msummary(models_5ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_5ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_5ylag.tex")
+
+msummary(models_6ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_6ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_6ylag.tex")
+
+msummary(models_7ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_7ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_7ylag.tex")
+
+msummary(models_8ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels)
+msummary(models_8ylag, stars = TRUE,
+         coef_omit = "YEAR_FACTOR",
+         coef_map = coef_labels,
+         output = "../TeX/assets/models_8ylag.tex")

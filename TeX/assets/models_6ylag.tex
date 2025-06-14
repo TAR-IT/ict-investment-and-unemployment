@@ -1,0 +1,44 @@
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+entry=none,label=none,
+note{}={+ p \num{< 0.1}, * p \num{< 0.05}, ** p \num{< 0.01}, *** p \num{< 0.001}},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]},
+column{2,3,4}={}{halign=c,},
+column{1}={}{halign=l,},
+hline{20}={1,2,3,4}{solid, black, 0.05em},
+}                     %% tabularray inner close
+\toprule
+& Low
+education & Medium
+education & High
+education \\ \midrule %% TinyTableHeader
+ICT investment (6Y lag)          & \num{4.874}***  & \num{2.855}***  & \num{1.259}***  \\
+& (\num{0.599})   & (\num{0.360})   & (\num{0.212})   \\
+ICT 6Y lag × Central European    & \num{0.582}     & \num{-0.380}    & \num{-0.093}    \\
+& (\num{0.750})   & (\num{0.459})   & (\num{0.271})   \\
+ICT 6Y lag × Nordic              & \num{-0.203}    & \num{-0.082}    & \num{0.574}+    \\
+& (\num{0.885})   & (\num{0.534})   & (\num{0.315})   \\
+ICT 6Y lag × Post-socialist      & \num{-5.568}*** & \num{-3.415}*** & \num{-1.580}*** \\
+& (\num{0.683})   & (\num{0.417})   & (\num{0.253})   \\
+ICT 6Y lag × Southern European   & \num{1.983}+    & \num{-3.178}*** & \num{-3.073}*** \\
+& (\num{1.111})   & (\num{0.663})   & (\num{0.391})   \\
+GDP per capita                   & \num{-0.181}*** & \num{-0.152}*** & \num{-0.084}*** \\
+& (\num{0.019})   & (\num{0.012})   & (\num{0.007})   \\
+\% tertiary education           & \num{0.577}***  & \num{0.244}***  & \num{0.119}***  \\
+& (\num{0.051})   & (\num{0.033})   & (\num{0.019})   \\
+Employment protection strictness & \num{-0.147}    & \num{-0.123}*   & \num{-0.093}**  \\
+& (\num{0.092})   & (\num{0.058})   & (\num{0.035})   \\
+\% trade union density          & \num{0.099}*    & \num{0.045}+    & \num{0.009}     \\
+& (\num{0.039})   & (\num{0.025})   & (\num{0.015})   \\
+Num.Obs.                         & \num{3932}      & \num{3885}      & \num{3922}      \\
+R2                               & \num{0.335}     & \num{0.344}     & \num{0.308}     \\
+R2 Adj.                          & \num{0.325}     & \num{0.334}     & \num{0.299}     \\
+AIC                              & \num{20978.8}   & \num{17031.7}   & \num{13230.8}   \\
+BIC                              & \num{21148.2}   & \num{17200.9}   & \num{13400.2}   \\
+RMSE                             & \num{3.46}      & \num{2.15}      & \num{1.30}      \\
+\bottomrule
+\end{talltblr}
+\end{table}
